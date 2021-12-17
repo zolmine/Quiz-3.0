@@ -1,6 +1,7 @@
 const http = require('http');
 const PORT = process.env.PORT || 8000;
 const views = "./views/";
+const pages = "pages/"
 const {
     redirect
 } = require("./utils/tool");
@@ -14,7 +15,7 @@ const server = http.createServer((req, res) => {
     console.log(req.url);
 
     if (req.url === "/") {
-        redirect(views + "loginForm.ejs", res);
+        redirect(views +pages+ "loginPage.ejs", res);
 
     }
     if (req.url === `/login`) {

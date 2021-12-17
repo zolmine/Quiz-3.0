@@ -1,0 +1,111 @@
+<div class="h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 m-auto overflow-hidden">
+  <div class="max-w-md w-full space-y-8">
+    <div class="flex flex-wrap justify-center">
+      <div class="w-6/12 sm:w-4/12 px-4">
+
+        <img
+          src="https://images.unsplash.com/photo-1542831371-29b0f74f9713?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80"
+          alt="..." class="shadow-lg rounded-full max-w-full h-auto align-middle border-none" />
+      </div>
+      <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        Sign in to your account
+      </h2>
+    </div>
+    <form class="mt-8 space-y-6 loginForm">
+      <input type="hidden" name="remember" value="true">
+      <div class="rounded-md shadow-sm -space-y-px">
+        <div>
+          <label for="email-address" class="sr-only">User Name</label>
+          <input id="username" name="email" type="email" autocomplete="email" required
+            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+            placeholder="UserName">
+        </div>
+        <div>
+          <label for="password" class="sr-only">Password</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" required
+            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
+            placeholder="Password">
+        </div>
+      </div>
+      <div>
+        <button type="submit"
+          class=" submit relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Sign in
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="p-2 toast hidden">
+    <div class="fixed
+        top-0
+        inset-x-0
+        mx-auto
+        max-w-max
+        mt-10
+        inline-flex
+        items-center
+        bg-zinc-700
+        leading-none
+        text-white
+        rounded-full
+        p-2
+        shadow
+        text-teal text-sm">
+      <span class="inline-flex
+          bg-red-600
+          text-white
+          rounded-full
+          h-6
+          px-3
+          justify-center
+          items-center">Oops!</span>
+      <span class="inline-flex px-2">incorrect credentials</span>
+    </div>
+  </div>
+</div>
+<script>
+  const email = document.querySelector('.email')
+  const password = document.querySelector('.password')
+  const submit = document.querySelector('.loginForm')
+  const toast = document.querySelector('.toast')
+  const subButton = document.querySelector('.submit')
+
+  subButton.onclick = (e => {
+    e.preventDefault()
+    fetch('http://localhost:8000/login')
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        data.map((user) => {
+          if (user.User_name == submit.email.value && user.Password == submit.password.value) {
+            location.replace('/adminPanel')
+          } else {
+            toast.classList.remove("hidden");
+            setTimeout(() => {
+              toast.classList.add("hidden");
+            }, 2000);
+          }
+        })
+
+      })
+  })
+  // submit.addEventListener('submit', e => {
+  //   e.preventDefault()
+  //   fetch('http://localhost:5000/api/admins')
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       data.map((admin) => {
+  //         if (admin.email == submit.email.value && admin.password == submit.password.value) {
+  //           location.replace('/adminPanel')
+  //         } else {
+  //           toast.classList.remove("hidden");
+  //           setTimeout(() => {
+  //             toast.classList.add("hidden");
+  //           }, 2000);
+  //         }
+  //       })
+
+  //     })
+  // })
+</script>
