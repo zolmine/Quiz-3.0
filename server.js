@@ -1,27 +1,47 @@
-const http = require('http');
-const PORT = process.env.PORT || 8000;
-const views = "./views/";
-const pages = "pages/"
-const {
-    redirect
-} = require("./utils/tool");
+const express = require('express')
+const app = express()
+const bodyParser= require('body-parser')
+const port = 3000
+const pagesPath = "./views/pages/"
+var path = require('path');
 
-const {
-    getUserData
-} = require("./controllers/loginController")
+const UserController = require('./app/controllers/UserController');
 
-const server = http.createServer((req, res) => {
+// controllers methods
 
-    console.log(req.url);
+const res = require('express/lib/response')
 
-    if (req.url === "/") {
-        redirect(views +pages+ "loginPage.ejs", res);
+// adding the templite engine with path specification
 
-    }
-    if (req.url === `/login`) {
-        getUserData(req, res)
-    }
-});
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views/pages'));
+
+// indexing used libraries for app
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }))
+// app.use(cors());
+
+// routers
+app.get('/', (req, res) => {
+    res.redirect('/login')
+})
+app.get('/login', (req, res) => {
+  res.render('login')
+//   console.log(req);
+})
+app.get('/dashboard', (req, res) =>{
+  res.render('dashboard')
+})
 
 
-server.listen(PORT, () => console.log(`server running on ${PORT}`));
+
+/* link api/ */
+
+app.get('/api/addStudent', UserController.userRegister);
+app.get('/api/getAllStudents', UserController.getAllStudents)
+app.get('/api/update/:id', UserController.userUpdate)
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`)
+})
