@@ -8,6 +8,19 @@
             sm:rounded-lg
             tableForm
           ">
+        <input class="
+                  add
+                  text-green-500
+                  border-green-600 border-[2px]
+                  p-1
+                  mb-3
+                  rounded-md
+                  w-[5em]
+                  text-center
+                  cursor-pointer
+                  hover:bg-green-600 hover:text-white
+                  float-right
+                " type="button" value="add" name="add" />
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
             <tr>
@@ -215,12 +228,16 @@
     const updateForm = document.querySelector('.updateForm')
     const students = ''
     const tbody = document.querySelector('.tbody')
+    const overlay = document.querySelector('.click')
+    const add = document.querySelector('.add')
+    overlay.addEventListener('click', e => {
+      updateForm.classList.add('hidden')
+    })
 
     fetch(fetchPath + "api/getAllStudents")
       .then(res => res.json())
 
       .then((data) => data.data.map((row) => {
-        console.log(row);
         tbody.innerHTML += `
 
             <tr>
@@ -273,13 +290,52 @@
                   </tr>`
       }))
 
-      tbody.addEventListener("click", (e) => {
+    tbody.addEventListener("click", (e) => {
       if (e.target.classList.contains("update"))
+        updateForm.querySelector('.delete').classList.remove('hidden')
+      updateForm.querySelector('.update').value = 'Update'
+      // get the right data and populate the modal
+      fetch(fetchPath + `api/getUser/${e.target.id}`)
+        .then((response) => response.json())
+        .then(data => data.data.map((row) => {
+
+          fullName.value = row.fullName
+          email.value = row.email
+          fetch(fetchPath + `api/getUser2/${row.userId}`)
+            .then((response) => response.json())
+            .then(data1 => data1.data.map((row) => {
+              userName.value = row.User_name
+              password.value = row.Password
+            }))
+        }))
+        .then(() => updateForm.classList.remove('hidden'))
+
+    })
+    add.addEventListener("click", (e) => {
+      var update = updateForm.querySelector('.update')
       updateForm.classList.remove('hidden')
-      console.log(updateForm.target.classList.contains("fullName")); 
-        // get the right data and populate the modal
-        // fetch(fetchPath + `api/update/${e.target.id}`)
-        // .then((response) => response.json())
-        // .then(() => updateForm.classList.remove('hidden'))
+      updateForm.querySelector('.delete').classList.add('hidden')
+      update.value = 'add'
+      fullName.value = ""
+      email.value = ""
+      userName.value = ""
+      password.value = ""
+
+      update.onclick = () => {
+        data = {
+          fullName: fullName.value,
+          email: email.value,
+          userName: userName.value,
+          password: password.value
+        }
+        fetch(fetchPath + "api/addStudent", {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+        location.replace("/dashboard")
+      }
     })
   </script>

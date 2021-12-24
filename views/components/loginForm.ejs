@@ -65,6 +65,7 @@
   </div>
 </div>
 <script>
+  fetchPath = "http://localhost:3000/"
   const email = document.querySelector('.email')
   const password = document.querySelector('.password')
   const submit = document.querySelector('.loginForm')
@@ -73,13 +74,14 @@
 
   subButton.onclick = (e => {
     e.preventDefault()
-    fetch('http://localhost:8000/login')
+    fetch(fetchPath + 'api/auth')
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-        data.map((user) => {
+
+        data.data.map((user) => {
           if (user.User_name == submit.email.value && user.Password == submit.password.value) {
-            location.replace('/adminPanel')
+            user.position == 'staff' ? location.replace('/dashboard') : location.replace('/test')
+
           } else {
             toast.classList.remove("hidden");
             setTimeout(() => {
@@ -90,22 +92,4 @@
 
       })
   })
-  // submit.addEventListener('submit', e => {
-  //   e.preventDefault()
-  //   fetch('http://localhost:5000/api/admins')
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       data.map((admin) => {
-  //         if (admin.email == submit.email.value && admin.password == submit.password.value) {
-  //           location.replace('/adminPanel')
-  //         } else {
-  //           toast.classList.remove("hidden");
-  //           setTimeout(() => {
-  //             toast.classList.add("hidden");
-  //           }, 2000);
-  //         }
-  //       })
-
-  //     })
-  // })
 </script>

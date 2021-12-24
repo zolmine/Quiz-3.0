@@ -1,17 +1,24 @@
-const auth = require("../models/login");
+const Auth = require("../models/Auth");
+const connex = require('../../config/dataBaseConnection');
 
-// @desc Get all admin
-// @route GET /api/admin
-const Login = async (req, res) => {
-  try {
-    const login = await auth.login();
-    res.end(JSON.stringify(login));
-  } catch (error) {
-    console.log(error);
-  }
-};
+
+
+const login = (req, res) => {
+  connex.query(Auth.login(), (err, result) => {
+    if (err) {
+      res.status(400).json({
+        'error': err.mesage,
+        'error_line': err.file
+      })
+    }
+    res.status(200).json({
+      'data': result,
+    });
+  })
+
+}
 
 
 module.exports = {
-  Login,
+  login,
 };
